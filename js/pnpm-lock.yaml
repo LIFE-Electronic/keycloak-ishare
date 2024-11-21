@@ -233,8 +233,8 @@ importers:
         specifier: ^2.2.5
         version: 2.2.5(cypress@13.7.1)
       '@testing-library/cypress':
-        specifier: ^10.0.1
-        version: 10.0.1(cypress@13.7.1)
+        specifier: ^10.0.2
+        version: 10.0.2(cypress@13.7.1)
       '@testing-library/jest-dom':
         specifier: ^6.4.2
         version: 6.4.2(vitest@1.4.0)
@@ -701,13 +701,6 @@ packages:
     dependencies:
       '@babel/core': 7.23.9
       '@babel/helper-plugin-utils': 7.22.5
-    dev: true
-
-  /@babel/runtime@7.23.2:
-    resolution: {integrity: sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==}
-    engines: {node: '>=6.9.0'}
-    dependencies:
-      regenerator-runtime: 0.14.0
     dev: true
 
   /@babel/runtime@7.23.9:
@@ -2221,15 +2214,29 @@ packages:
     resolution: {integrity: sha512-myfUej5naTBWnqOCc/MdVOLVjXUXtIA+NpDrDBKJtLLg2shUjBu3cZmB/85RyitKc55+lUUyl7oRfLOvkr2hsw==}
     dev: true
 
-  /@testing-library/cypress@10.0.1(cypress@13.7.1):
-    resolution: {integrity: sha512-e8uswjTZIBhaIXjzEcrQQ8nHRWHgZH7XBxKuIWxZ/T7FxfWhCR48nFhUX5nfPizjVOKSThEfOSv67jquc1ASkw==}
+  /@testing-library/cypress@10.0.2(cypress@13.7.1):
+    resolution: {integrity: sha512-dKv95Bre5fDmNb9tOIuWedhGUryxGu1GWYWtXDqUsDPcr9Ekld0fiTb+pcBvSsFpYXAZSpmyEjhoXzLbhh06yQ==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       cypress: ^12.0.0 || ^13.0.0
     dependencies:
-      '@babel/runtime': 7.23.2
-      '@testing-library/dom': 9.3.3
+      '@babel/runtime': 7.23.9
+      '@testing-library/dom': 10.4.0
       cypress: 13.7.1
+    dev: true
+
+  /@testing-library/dom@10.4.0:
+    resolution: {integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==}
+    engines: {node: '>=18'}
+    dependencies:
+      '@babel/code-frame': 7.23.5
+      '@babel/runtime': 7.23.9
+      '@types/aria-query': 5.0.3
+      aria-query: 5.3.0
+      chalk: 4.1.2
+      dom-accessibility-api: 0.5.16
+      lz-string: 1.5.0
+      pretty-format: 27.5.1
     dev: true
 
   /@testing-library/dom@9.3.3:
