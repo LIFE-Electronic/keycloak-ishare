@@ -78,8 +78,8 @@ importers:
         specifier: ^4.93.7
         version: 4.93.7(react-dom@18.2.0)(react@18.2.0)
       '@patternfly/react-table':
-        specifier: ^4.113.6
-        version: 4.113.6(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^6.0.0
+        version: 6.0.0(react-dom@18.2.0)(react@18.2.0)
       i18next:
         specifier: ^23.10.1
         version: 23.10.1
@@ -166,8 +166,8 @@ importers:
         specifier: ^4.92.8
         version: 4.92.8
       '@patternfly/react-table':
-        specifier: ^4.113.6
-        version: 4.113.6(react-dom@18.2.0)(react@18.2.0)
+        specifier: ^6.0.0
+        version: 6.0.0(react-dom@18.2.0)(react@18.2.0)
       admin-ui:
         specifier: 'file:'
         version: file:apps/admin-ui(@types/react@18.2.65)(react-monaco-editor@0.51.0)
@@ -1547,6 +1547,22 @@ packages:
       tslib: 2.6.2
     dev: false
 
+  /@patternfly/react-core@6.0.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-UKFj9+YzBY+FfEDsLONgOM4N0e8SPV/27/UzNRiJ0gpgqbw2POuXwLpjGSRTTIUuCaLaGGM5PeTSj7mMB73ykw==}
+    peerDependencies:
+      react: ^17 || ^18
+      react-dom: ^17 || ^18
+    dependencies:
+      '@patternfly/react-icons': 6.0.0(react-dom@18.2.0)(react@18.2.0)
+      '@patternfly/react-styles': 6.0.0
+      '@patternfly/react-tokens': 6.0.0
+      focus-trap: 7.6.0
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      react-dropzone: 14.2.3(react@18.2.0)
+      tslib: 2.8.1
+    dev: false
+
   /@patternfly/react-icons@4.93.7(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-3kr35dgba7Qz5CSzmfH0rIjSvBC5xkmiknf3SvVUVxaiVA7KRowID8viYHeZlf3v/Oa3sEewaH830Q0t+nWsZQ==}
     peerDependencies:
@@ -1557,28 +1573,46 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /@patternfly/react-icons@6.0.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-ZFrsBVKrAp0DZrPOss98OA/EVUL4F0frXhR1uBId9+3ZrRArdKTgYgmQUCeSzMbxnSlxpmm3a2L05XQ36VUVbw==}
+    peerDependencies:
+      react: ^17 || ^18
+      react-dom: ^17 || ^18
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
   /@patternfly/react-styles@4.92.8:
     resolution: {integrity: sha512-K4lUU8O4HiCX9NeuNUIrPgN3wlGERCxJVio+PAjd8hpJD/PKnjFfOJ9u6/Cii3qLy/5ZviWPRNHbGiwA/+YUhg==}
     dev: false
 
-  /@patternfly/react-table@4.113.6(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-09TfJISmJVsCH0pTSFtHY0PBWVJpffT0DJT8WvMNttU/vpC7XJVdeXi+yWaIUoqfgZvL0c7Cmu5rUT97zUODJQ==}
+  /@patternfly/react-styles@6.0.0:
+    resolution: {integrity: sha512-fJFMB89sTRGlZTzTLmpRmthgOXqcN078scHMFJ3ttfi2D2btnem5oZrxmQ/gPZkZOxR+9MqwKDB6l3F5x1SqLQ==}
+    dev: false
+
+  /@patternfly/react-table@6.0.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-LvWMzjcQZHdFUpK8fjj5EAFrNxqB8/MFd7gUUZu7AgYt6rmS2im4xk6yb7h0K7cAhY085oPeRF9lkYSCgzlRDg==}
     peerDependencies:
-      react: ^16.8 || ^17 || ^18
-      react-dom: ^16.8 || ^17 || ^18
+      react: ^17 || ^18
+      react-dom: ^17 || ^18
     dependencies:
-      '@patternfly/react-core': 4.278.0(react-dom@18.2.0)(react@18.2.0)
-      '@patternfly/react-icons': 4.93.7(react-dom@18.2.0)(react@18.2.0)
-      '@patternfly/react-styles': 4.92.8
-      '@patternfly/react-tokens': 4.94.7
+      '@patternfly/react-core': 6.0.0(react-dom@18.2.0)(react@18.2.0)
+      '@patternfly/react-icons': 6.0.0(react-dom@18.2.0)(react@18.2.0)
+      '@patternfly/react-styles': 6.0.0
+      '@patternfly/react-tokens': 6.0.0
       lodash: 4.17.21
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: false
 
   /@patternfly/react-tokens@4.94.7:
     resolution: {integrity: sha512-h+ducOLDMSxcuec3+YY3x+stM5ZUSnrl/lC/eVmjypil2El08NuE2MNEPMQWdhrod6VRRZFMNqZw/m82iv6U1A==}
+    dev: false
+
+  /@patternfly/react-tokens@6.0.0:
+    resolution: {integrity: sha512-xd0ynDkiIW2rp8jz4TNvR4Dyaw9kSMkZdsuYcLlFXCVmvX//Mnl4rhBnid/2j2TaqK0NbkyTTPnPY/BU7SfLVQ==}
     dev: false
 
   /@pkgr/utils@2.4.2:
@@ -1590,7 +1624,7 @@ packages:
       is-glob: 4.0.3
       open: 9.1.0
       picocolors: 1.0.0
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: true
 
   /@playwright/test@1.42.1:
@@ -4996,7 +5030,7 @@ packages:
     resolution: {integrity: sha512-kCWw3+Aai8Uox+5tHCNgMFaUdgidxvMnLWO6fM5sZ0hA2wlHP5/DHGF0ECe84BiB95qdJbKNEJhWKVDvMN+JDQ==}
     engines: {node: '>= 10'}
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: false
 
   /file-selector@0.6.0:
@@ -5104,6 +5138,12 @@ packages:
     resolution: {integrity: sha512-gBEuXOPNOKPrLdZpMFUSTyIo1eT2NSZRrwZ9r/0Jqw5tmT3Yvxfmu8KBHw8xW2XQkw6E/JoG+OlEq7UDtSUNgw==}
     dependencies:
       tabbable: 5.3.3
+    dev: false
+
+  /focus-trap@7.6.0:
+    resolution: {integrity: sha512-1td0l3pMkWJLFipobUcGaf+5DTY4PLDDrcqoSaKP8ediO/CoWCCYk/fT/Y2A4e6TNB+Sh6clRJCjOPPnKoNHnQ==}
+    dependencies:
+      tabbable: 6.2.0
     dev: false
 
   /for-each@0.3.3:
@@ -7509,7 +7549,7 @@ packages:
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: true
 
   /safe-array-concat@1.1.0:
@@ -7953,11 +7993,15 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     dependencies:
       '@pkgr/utils': 2.4.2
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: true
 
   /tabbable@5.3.3:
     resolution: {integrity: sha512-QD9qKY3StfbZqWOPLp0++pOrAVb/HbUi5xCc8cUo4XjP19808oaMiDzn0leBY5mCespIBM0CIZePzZjgzR83kA==}
+    dev: false
+
+  /tabbable@6.2.0:
+    resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
     dev: false
 
   /tapable@2.2.1:
@@ -8146,6 +8190,9 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
+  /tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
   /tsutils@3.21.0(typescript@5.4.3):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -8984,7 +9031,7 @@ packages:
       '@patternfly/react-core': 4.278.0(react-dom@18.2.0)(react@18.2.0)
       '@patternfly/react-icons': 4.93.7(react-dom@18.2.0)(react@18.2.0)
       '@patternfly/react-styles': 4.92.8
-      '@patternfly/react-table': 4.113.6(react-dom@18.2.0)(react@18.2.0)
+      '@patternfly/react-table': 6.0.0(react-dom@18.2.0)(react@18.2.0)
       awesome-debounce-promise: 2.1.0
       dagre: 0.8.5
       file-saver: 2.0.5
