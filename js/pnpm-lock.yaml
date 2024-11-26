@@ -178,8 +178,8 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5
       file-selector:
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^2.1.1
+        version: 2.1.1
       flat:
         specifier: ^6.0.1
         version: 6.0.1
@@ -1590,7 +1590,7 @@ packages:
       is-glob: 4.0.3
       open: 9.1.0
       picocolors: 1.0.0
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: true
 
   /@playwright/test@1.42.1:
@@ -4996,14 +4996,21 @@ packages:
     resolution: {integrity: sha512-kCWw3+Aai8Uox+5tHCNgMFaUdgidxvMnLWO6fM5sZ0hA2wlHP5/DHGF0ECe84BiB95qdJbKNEJhWKVDvMN+JDQ==}
     engines: {node: '>= 10'}
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: false
 
   /file-selector@0.6.0:
     resolution: {integrity: sha512-QlZ5yJC0VxHxQQsQhXvBaC7VRJ2uaxTf+Tfpu4Z/OcVQJVpZO+DGU0rkoVW5ce2SccxugvpBJoMvUs59iILYdw==}
     engines: {node: '>= 12'}
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
+    dev: false
+
+  /file-selector@2.1.1:
+    resolution: {integrity: sha512-pJVY80PuSiHbnYEZ0gZYQf15x0z/lkeIF1yn95yRC/Usb43343ewXtMClQ9GLPvPm4/SscX4zvQz9QhCAyLqlg==}
+    engines: {node: '>= 12'}
+    dependencies:
+      tslib: 2.8.1
     dev: false
 
   /filing-cabinet@4.1.6:
@@ -7509,7 +7516,7 @@ packages:
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: true
 
   /safe-array-concat@1.1.0:
@@ -7953,7 +7960,7 @@ packages:
     engines: {node: ^14.18.0 || >=16.0.0}
     dependencies:
       '@pkgr/utils': 2.4.2
-      tslib: 2.6.2
+      tslib: 2.8.1
     dev: true
 
   /tabbable@5.3.3:
@@ -8146,6 +8153,9 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
+  /tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
   /tsutils@3.21.0(typescript@5.4.3):
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
@@ -8988,7 +8998,7 @@ packages:
       awesome-debounce-promise: 2.1.0
       dagre: 0.8.5
       file-saver: 2.0.5
-      file-selector: 0.6.0
+      file-selector: 2.1.1
       flat: 6.0.1
       i18next: 23.10.1
       i18next-http-backend: 2.5.0
