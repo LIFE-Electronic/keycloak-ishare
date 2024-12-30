@@ -486,8 +486,8 @@ importers:
         specifier: ^3.8.1
         version: 3.8.1(@types/node@20.11.30)(rollup@4.13.1)(typescript@5.4.3)(vite@5.2.6)
       vite-plugin-lib-inject-css:
-        specifier: ^2.0.1
-        version: 2.0.1(vite@5.2.6)
+        specifier: ^2.2.0
+        version: 2.2.0(vite@5.2.6)
       vitest:
         specifier: ^1.4.0
         version: 1.4.0(@types/node@20.11.30)(jsdom@24.0.0)(lightningcss@1.24.1)
@@ -531,6 +531,102 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.20
+    dev: true
+
+  /@ast-grep/napi-darwin-arm64@0.32.2:
+    resolution: {integrity: sha512-TPUJEO6irdYeGnalM878B93bqxLBslxhADQwQodtRfoK0Twd2T/U1ZcWVA1ntV1buR0C7ipHVT2737O/Aj31+Q==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@ast-grep/napi-darwin-x64@0.32.2:
+    resolution: {integrity: sha512-VBouGnUTpV2sSdktjF6pVy/Rw8PkWe0U5TFx0zzQIGmPeoTUfClpuqWdKLlBGyKs0nKQ5+TKw989csKTFTU6wQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@ast-grep/napi-linux-arm64-gnu@0.32.2:
+    resolution: {integrity: sha512-mVHbzQPCyG550lDa1t83BtITRmnA9464L2HtLCaRfLf0PUSMe44kyWYJDwt5YhaYWEZzTuVKxAhxZERiAgP6KA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@ast-grep/napi-linux-arm64-musl@0.32.2:
+    resolution: {integrity: sha512-AWCrr5PgnrJBgm4N604KOJcG3dZpCFsee7v2MKyYTVDZ1ls75iLncTcRPi+Na7O0h9B6XJUpgh8VQ5RhzPEvzQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@ast-grep/napi-linux-x64-gnu@0.32.2:
+    resolution: {integrity: sha512-P51SZCa2V4j79+X8YT1gZaMGNUjiUyf9KrdnAFKpf2w3iSXhWaa/cMAUoEeRFgSHSQ1ReaCOZNaJI4vRUGZQtg==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@ast-grep/napi-linux-x64-musl@0.32.2:
+    resolution: {integrity: sha512-MlApu44GKdluuTaDE/HK+T/+UfpU4tdR7JZSxEJQGt6jnVpbWEIbq2szsFNTUtu0eYb7mqn64ftC5QHC6RRRag==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@ast-grep/napi-win32-arm64-msvc@0.32.2:
+    resolution: {integrity: sha512-cs0Pa//3Vm5mBCKQgmVkwy7U9LGxVAD0w8aRwqdzNz2fdxpQ5XX+GhZH4EnvNZAsVTCrgdqIY5pKq6oUDDLeBA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@ast-grep/napi-win32-ia32-msvc@0.32.2:
+    resolution: {integrity: sha512-nMv+XTM9t+1gkceSKBmt+A5VKrQvTtnh65TK8NRdD7MxHpYhlZazZx3qBf2s13mb2qkRjLD0Umu33ZmXUvFblA==}
+    engines: {node: '>= 10'}
+    cpu: [ia32]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@ast-grep/napi-win32-x64-msvc@0.32.2:
+    resolution: {integrity: sha512-dEU2/BSahI9GSlibc0HGYldBOhpl8fNv1XsM5rEVLBQ++Eg6QhIXQG1cjPsnGAaSaTDvurBTj/09WiPJt58rZw==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+    requiresBuild: true
+    dev: true
+    optional: true
+
+  /@ast-grep/napi@0.32.2:
+    resolution: {integrity: sha512-VHgEqKBJH1wZH3GHI09Io4TySi8IpEi3s0EOtKAvvyixUxpqMNw+vx6a4sJDQUrLSGPeQ5e0ZokQi2GOGovY1g==}
+    engines: {node: '>= 10'}
+    optionalDependencies:
+      '@ast-grep/napi-darwin-arm64': 0.32.2
+      '@ast-grep/napi-darwin-x64': 0.32.2
+      '@ast-grep/napi-linux-arm64-gnu': 0.32.2
+      '@ast-grep/napi-linux-arm64-musl': 0.32.2
+      '@ast-grep/napi-linux-x64-gnu': 0.32.2
+      '@ast-grep/napi-linux-x64-musl': 0.32.2
+      '@ast-grep/napi-win32-arm64-msvc': 0.32.2
+      '@ast-grep/napi-win32-ia32-msvc': 0.32.2
+      '@ast-grep/napi-win32-x64-msvc': 0.32.2
     dev: true
 
   /@babel/code-frame@7.23.5:
@@ -1300,7 +1396,7 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       '@jridgewell/set-array': 1.1.2
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
       '@jridgewell/trace-mapping': 0.3.20
     dev: true
 
@@ -1325,18 +1421,22 @@ packages:
     resolution: {integrity: sha512-eF2rxCRulEKXHTRiDrDy6erMYWqNw4LPdQ8UQA4huuxaQsVeRPFl2oM8oDGxMFhJUWZf9McpLtJasDDZb/Bpeg==}
     dev: true
 
+  /@jridgewell/sourcemap-codec@1.5.0:
+    resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
+    dev: true
+
   /@jridgewell/trace-mapping@0.3.20:
     resolution: {integrity: sha512-R8LcPeWZol2zR8mmH3JeKQ6QRCFb7XgUhV9ZlGhHLGyg4wpPiPZNQOOWhFZhxKw8u//yTbNGI42Bx/3paXEQ+Q==}
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
     dev: true
 
   /@jridgewell/trace-mapping@0.3.9:
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
     dependencies:
       '@jridgewell/resolve-uri': 3.1.1
-      '@jridgewell/sourcemap-codec': 1.4.15
+      '@jridgewell/sourcemap-codec': 1.5.0
     dev: true
 
   /@microsoft/api-extractor-model@7.28.13(@types/node@20.11.30):
@@ -1589,7 +1689,7 @@ packages:
       fast-glob: 3.3.1
       is-glob: 4.0.3
       open: 9.1.0
-      picocolors: 1.0.0
+      picocolors: 1.1.1
       tslib: 2.6.2
     dev: true
 
@@ -2861,7 +2961,7 @@ packages:
   /@vitest/snapshot@1.4.0:
     resolution: {integrity: sha512-saAFnt5pPIA5qDGxOHxJ/XxhMFKkUSBJmVt5VgDsAqPTX6JP326r5C/c9UuCMPoXNzuudTPsYDZCoJ5ilpqG2A==}
     dependencies:
-      magic-string: 0.30.8
+      magic-string: 0.30.17
       pathe: 1.1.1
       pretty-format: 29.7.0
     dev: true
@@ -6412,6 +6512,12 @@ packages:
     hasBin: true
     dev: true
 
+  /magic-string@0.30.17:
+    resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.0
+    dev: true
+
   /magic-string@0.30.5:
     resolution: {integrity: sha512-7xlpfBaQaP/T6Vh8MO/EqXSW5En6INHEvEXQiuff7Gku0PWjU3uf6w/j9o7O+SpB5fOAkrI5HeoNgwjEO0pFsA==}
     engines: {node: '>=12'}
@@ -6879,6 +6985,10 @@ packages:
 
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
+    dev: true
+
+  /picocolors@1.1.1:
+    resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
     dev: true
 
   /picomatch@2.3.1:
@@ -8321,7 +8431,7 @@ packages:
     dependencies:
       browserslist: 4.23.0
       escalade: 3.1.1
-      picocolors: 1.0.0
+      picocolors: 1.1.1
     dev: true
 
   /uri-js@4.4.1:
@@ -8421,7 +8531,7 @@ packages:
       cac: 6.7.14
       debug: 4.3.4(supports-color@8.1.1)
       pathe: 1.1.1
-      picocolors: 1.0.0
+      picocolors: 1.1.1
       vite: 5.2.6(@types/node@20.11.30)(lightningcss@1.24.1)
     transitivePeerDependencies:
       - '@types/node'
@@ -8510,13 +8620,14 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-lib-inject-css@2.0.1(vite@5.2.6):
-    resolution: {integrity: sha512-86VU8m4t3TNPk9xfdnNDqn1OHkgrPHpP7B5wkVys4tWSLwMMIucCgJdc5wenGntLNMWKChJV0Ut3qGH6iGojMg==}
+  /vite-plugin-lib-inject-css@2.2.0(vite@5.2.6):
+    resolution: {integrity: sha512-KmWyFsdk08AlDDbXPeAtF+NCcvTJ1yvcJGvN1x5hHiUVcO9i1Gpi9Q2vHumwnlHZrowsSB1G2EdJRLYpf4k86A==}
     peerDependencies:
       vite: '*'
     dependencies:
-      magic-string: 0.30.8
-      picocolors: 1.0.0
+      '@ast-grep/napi': 0.32.2
+      magic-string: 0.30.17
+      picocolors: 1.1.1
       vite: 5.2.6(@types/node@20.11.30)(lightningcss@1.24.1)
     dev: true
 
