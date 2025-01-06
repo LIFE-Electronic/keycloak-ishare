@@ -162,9 +162,9 @@ public class ISHARECapabilitiesEndpoint {
         // tbd for conf test?
         //String loginEP = "";
 
-        publicFeatures.add(createFeature("access_token", "OIDC iSHARE Access Token", "Call to get access token for code", tokenEP, null));
+        publicFeatures.add(createFeature("access-token", "OIDC iSHARE Access Token", "Call to get access token for code", tokenEP, null));
         publicFeatures.add(createFeature("authorize", "OIDC iSHARE Authorization", "Initiates iSHARE OIDC Flow", authEP, null));
-        publicFeatures.add(createFeature("user_info", "OIDC iSHARE User Info", "Obtains user info", userinfoEP, tokenEP));
+        publicFeatures.add(createFeature("user-info", "OIDC iSHARE User Info", "Obtains user info", userinfoEP, tokenEP));
 
         features.put("public", publicFeatures);
 
@@ -195,7 +195,7 @@ public class ISHARECapabilitiesEndpoint {
         Map<String, Object> feature = new HashMap<>();
         feature.put("id", id);
         feature.put("feature", name);
-        feature.put("desc", desc);
+        feature.put("description", desc);
         feature.put("url", url);
         if (token_endpoint != null) {
             feature.put("token_endpoint", token_endpoint);
