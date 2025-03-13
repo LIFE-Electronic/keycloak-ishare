@@ -1,0 +1,487 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
+
+
+body {
+  background-image: url('../img/background.png');
+  background-size: cover;
+  margin: 0px;
+  backdrop-filter: blur(200px);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header {
+  border-radius: 16px;
+  background: #FFFFFF66;
+  width: 480px;
+}
+
+.kc-form {
+  border-radius: 16px;
+  background: white;
+  width: 480px;
+}
+
+.kc-form-wrapper {
+  padding: 16px;
+}
+
+.header-content {
+  padding-top: 24px;
+  padding-bottom: 24px;
+  padding-left: 16px;
+  padding-right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dmi-logo {
+  width: 281px;
+}
+
+.powered-by-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ishare-logo {
+  width: 87px;
+}
+
+.body2 {
+  font-family: Karla;
+  font-weight: 300;
+  color: #6D7A88;
+  font-size: 14px;
+  letter-spacing: -0.43px;
+}
+
+h2 {
+  font-family: Inter;
+  font-weight: 600;
+  size: 24.5px;
+  color: #363D44;
+  padding-bottom: 16px;
+}
+
+input[type = "text"], input[type = "password"] {
+  all: unset;
+  height: 48px;
+  border-radius: 8px;
+  border: 1px solid #C6CCD2;
+  width: 100%;
+  text-indent: 16px; 
+}
+
+input[type = "text"]:focus, input[type = "password"]:focus, input[type = "submit"]:focus {
+  outline: 2px solid #4890DA;
+  outline-offset: 2px;
+}
+
+input[type = "text"] {
+  font-family: Karla;
+  font-weight: 300;
+  color: #6D7A88;
+  font-size: 14px;
+  letter-spacing: -0.43px;
+}
+
+input[type = "password"] {
+  font-family: Inter;
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: -0.43px;
+  color: #6D7A88;
+}
+
+input[type = "password"]::placeholder {
+  font-family: Karla;
+  font-weight: 300;
+  color: #B3BAC1;
+  font-size: 14px;
+  letter-spacing: -0.43px;
+}
+
+input[type = "submit"] {
+  all: unset;
+  background: #4890DA;
+  border-radius: 48px;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: Karla;
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+  letter-spacing: 1.1px;
+  width: 100%;
+  height: 48px;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.password-container {
+  display: flex;
+  gap: 4px;
+}
+
+.kc-form-login {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.errorMessage {
+  font-family: Inter;
+  font-weight: 300;
+  font-size: 12px;
+  padding-top: 4px;
+  letter-spacing: -0.43px;
+  color: #D63230;
+}
+
+.errorInput {
+  border-color: #D63230 !important;
+}
+
+.password-visibility-button {
+  height: 48px;
+  width: 48px;
+  cursor: pointer;
+  color: #6D7A88;
+  background-color: white;
+  border: none;
+  outline: none;
+} */
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+:root {
+  --border-color: #D6D9DD;
+  --navy-blue: #004d6e;
+  --text-color: #D6D9DD;
+  --danger-color: #db222a;
+}
+
+body {
+  margin: 0px;
+  overflow: hidden;
+  font-family: -apple-system,blinkmacsystemfont,"Segoe UI",roboto,oxygen-sans,ubuntu,cantarell,"Helvetica Neue",sans-serif;
+}
+
+.page-container {
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.left-panel-content {
+  max-width: 443px;
+}
+
+.left-panel {
+  background-image: url('../img/background.jpg');
+  background-size: cover;
+  background-position: 50% 50%;
+  width: 50%;
+  color: white;
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .left-panel {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .right-panel {
+    min-width: unset;
+    width: 100%;
+  }
+}
+
+.right-panel {
+  width: 50%;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.check-container {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+
+.remember-me-label {
+  display: flex;
+  gap: 16px;
+  color: var(--navy-blue);
+  font-size: 14px;
+}
+
+.check-container .checkmark {
+  position: absolute;
+  display: none;
+  cursor: pointer;
+}
+
+input[type="checkbox"] {
+  position: absolute;
+}
+
+input[type="checkbox"]:checked + .checkmark {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+h1 {
+  font-family: 'Barlow', sans-serif !important;
+  font-size: 36px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+h2 {
+  /* font-family: 'Barlow', sans-serif !important; */
+  font-size: 25px;
+  font-weight: 700;
+  color: var(--navy-blue);
+}
+
+p {
+  font-family: 'Barlow', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.dmi-logo {
+  width: 320px;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-width: 1px;
+  border-color: var(--border-color);
+  border-style: solid;
+  border-radius: 6px;
+}
+
+.input-container:focus-within {
+  border-color: #004d6e;
+  outline: 2px solid #e5edf0;
+}
+
+.before-box {
+  color: #5A5A5A;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 12px;
+}
+
+input {
+  border: none;
+  padding-left: 5px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  display: flex;
+  flex-grow: 1;
+}
+
+input[type="text"] {
+  border: none;
+  padding: 10px 10px 10px 0px;
+  border: none;
+  outline: none;
+}
+
+input[type="password"] {
+  border: none;
+  padding: 10px 10px 10px 0px;
+  border: none;
+  outline: none;
+}
+
+input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  padding: 0px;
+  margin: 0px;
+  accent-color: var(--navy-blue);
+  cursor: pointer;
+  appearance: none;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+
+input[type="checkbox"]:checked {
+  background-color: var(--navy-blue);
+  border-color: var(--navy-blue);
+}
+
+input[type="checkbox"]:checked {
+  font-size: 16px;
+  color: white;
+}
+
+input[type="checkbox"]:focus {
+  outline: 2px solid #e5edf0;
+}
+
+input:focus {
+  border: none;
+  outline: none;
+}
+
+input::placeholder {
+  color: grey;
+}
+
+.kc-form-login {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 450px;
+}
+
+.password-visibility-button {
+  background-color: unset;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  color: #a9b2bb;
+}
+
+.password-visibility-button:hover {
+  color: #f9be99;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: var(--navy-blue);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 10px 10px 10px 0px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: -apple-system,blinkmacsystemfont,"Segoe UI",roboto,oxygen-sans,ubuntu,cantarell,"Helvetica Neue",sans-serif;
+  outline: none;
+  border: none;
+}
+
+.button:hover {
+  background-color: #f57d30;
+}
+
+a {
+  color: var(--navy-blue);
+  text-decoration: none;
+}
+
+a:hover {
+  color: #f57d30;
+}
+
+.form-settings {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.reset-password-information {
+  font-family: -apple-system,blinkmacsystemfont,"Segoe UI",roboto,oxygen-sans,ubuntu,cantarell,"Helvetica Neue",sans-serif;
+  color: #5a5a5a;
+  font-weight: 400;
+}
+
+.reset-password-content {
+  width: 450px;
+}
+
+.back-to-login-link {
+  padding: 10px 10px 10px 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: -apple-system,blinkmacsystemfont,"Segoe UI",roboto,oxygen-sans,ubuntu,cantarell,"Helvetica Neue",sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.form-actions-reset-password {
+  padding-top: 32px;
+}
+
+.errorMessage {
+  border-radius: 6px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  color: var(--danger-color);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.logout-other-sessions-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.config-totp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kc-attempted-username {
+  font-family: -apple-system,blinkmacsystemfont,"Segoe UI",roboto,oxygen-sans,ubuntu,cantarell,"Helvetica Neue",sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+}
+
+.reset-login {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.kc-otp-login-form {
+  padding-top: 32px;
+}
+
+.user-conditions-link-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.user-conditions-link {
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
