@@ -60,6 +60,8 @@ export const RealmSettingsEmailTab = ({
     defaultValue: "",
   });
 
+  console.log("chiken", { authenticationEnabled });
+
   const testConnection = async () => {
     const toNumber = (value: string) => Number(value);
     const toBoolean = (value: string) => value === true.toString();
@@ -206,6 +208,7 @@ export const RealmSettingsEmailTab = ({
               labelOn={t("enabled")}
               labelOff={t("disabled")}
             />
+            helooooo
             {authenticationEnabled === "true" && (
               <>
                 <TextControl
