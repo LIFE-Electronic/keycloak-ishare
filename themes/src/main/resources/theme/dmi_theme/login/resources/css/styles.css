@@ -225,7 +225,6 @@ input::placeholder {
 .button {
   display: flex;
   justify-content: center;
-  max-width: 200px;
   align-items: center;
   width: 100%;
   background-color: var(--navy-blue);
@@ -352,6 +351,7 @@ a:hover {
 }
 
 .accept-cancel {
+  max-width: 200px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -359,7 +359,6 @@ a:hover {
 
 .secondary-button {
   display: flex;
-  max-width: 200px;
   justify-content: center;
   align-items: center;
   width: 100%;
