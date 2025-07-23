@@ -68,6 +68,7 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -183,6 +184,9 @@ public class AuthorizationEndpoint extends AuthorizationEndpointBase {
                 OIDCAdvancedConfigWrapper oidc = OIDCAdvancedConfigWrapper.fromClientModel(client);
                 oidc.setUseRefreshToken(false);
                 oidc.setUserInfoSignedResponseAlg(Algorithm.RS256);
+                List<String> acr_values = new LinkedList();
+                acr_values.add("urn:http://eidas.europa.eu/LoA/NotNotified/substantial");
+                oidc.setAttributeMultivalued(Constants.DEFAULT_ACR_VALUES, acr_values);
 
                 client.setManagementUrl("");
                 client.setPublicClient(false);
@@ -198,6 +202,8 @@ public class AuthorizationEndpoint extends AuthorizationEndpointBase {
                 client.setImplicitFlowEnabled(false);
                 client.setServiceAccountsEnabled(false);
                 client.setSurrogateAuthRequired(false);
+
+                
             
                 client.updateClient();
 
