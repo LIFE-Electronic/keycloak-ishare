@@ -4,14 +4,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import org.keycloak.util.JsonSerialization;
+import org.keycloak.jose.JOSEHeader;
+import org.keycloak.jose.JOSEParser;
+import org.keycloak.jose.jwe.JWE;
+import org.keycloak.jose.jwe.JWEException;
 import org.keycloak.jose.jws.JWSBuilder;
 import org.keycloak.jose.jws.JWSInput;
+import org.keycloak.jose.jws.JWSInputException;
 import org.keycloak.representations.JsonWebToken;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.common.util.PemUtils;
 import org.keycloak.crypto.SignatureSignerContext;
 import org.keycloak.jose.jws.JWSHeader;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.crypto.KeyUse;
+import org.keycloak.crypto.KeyWrapper;
 import org.keycloak.crypto.SignatureProvider;
 import org.keycloak.crypto.SignatureSignerContext;
 
@@ -19,10 +26,13 @@ import org.jboss.logging.Logger;
 
 import java.util.*;
 import java.security.cert.X509Certificate;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.cert.CertificateFactory;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.io.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -112,6 +122,12 @@ class ISHARECertificateInfo implements Serializable {
     public String x5c;
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+class JWEHeaderCerts implements Serializable {
+    @JsonProperty("x5c")
+    public String[] x5c;
+}
+
 public class ISHARE {
 
     private static final Logger logger = Logger.getLogger(ISHARE.class);
@@ -189,6 +205,39 @@ public class ISHARE {
         }        
 
         return true;
+    }
+
+    public boolean isProbablyJwe(String incoming_token) {
+        String[] parts = incoming_token.split("\\.");
+        return parts.length == 5; // JWE requires 5 parts
+    }
+
+    JWE getDecryptedJWE(String incoming_token) throws JWEException
+    {
+        JWE jwe = new JWE();
+
+        KeyWrapper key = this.session.keys().getActiveKey(session.getContext().getRealm(), KeyUse.SIG,"RS256");
+
+        jwe.getKeyStorage().setDecryptionKey((PrivateKey)key.getPrivateKey());
+        jwe.verifyAndDecodeJwe(incoming_token);
+        return jwe;
+    }
+
+    public boolean decryptAndVerifyClientTokenAndParty(String idpEORI, String clientId, String incoming_token)
+    {
+        try {
+            JWE jwe = this.getDecryptedJWE(incoming_token);
+
+            byte[] header64 = Base64Url.decode(jwe.getBase64Header());
+            JWEHeaderCerts headerCerts = JsonSerialization.readValue(header64, JWEHeaderCerts.class);
+
+            String our_client_assertion = createSatelliteClientAssertion(idpEORI, this.session);
+            
+            return verifyClientAtSatellite(clientId, headerCerts.x5c[0], idpEORI, our_client_assertion);
+        } catch (Exception e) {
+            logger.errorf("Exception validating client_assertion: %s", e.toString());
+        }        
+        return false;
     }
 
     public boolean verifyClientTokenAndParty(String idpEORI, String clientId, String incoming_token)
@@ -432,6 +481,35 @@ public class ISHARE {
 
         String[] x5c = header.getX5C();
         return x5c;
+    }
+
+    public Map<String, Object> getClaimsFromClientAssertion(String assertion)
+    {
+        if (this.isProbablyJwe(assertion)) {
+            try {
+                JWE jwe = this.getDecryptedJWE(assertion);
+
+                String jsonContent = new String(jwe.getContent(), StandardCharsets.UTF_8);
+
+                return JsonSerialization.readValue(jsonContent, Map.class);
+            } catch (JWEException e) {
+                logger.errorf("JWE Exception: %s", e.toString());
+                return new HashMap<>();
+            } catch (IOException e) {
+                logger.errorf("JSON Exception: %s", e.toString());
+                return new HashMap<>();
+            }
+        } else {
+            try {
+                JWSInput jws = new JWSInput(assertion);
+                JsonWebToken webtoken = jws.readJsonContent(JsonWebToken.class);
+                Map<String, Object> claims = webtoken.getOtherClaims();
+                return claims;
+            } catch (JWSInputException e) {
+                logger.errorf("Invalid JWS Input: %s", e.toString());
+                return new HashMap<>();
+            }
+        }
     }
 
     public boolean validateJwtCert(JWSInput jws) throws Exception

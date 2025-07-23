@@ -98,9 +98,10 @@ public class AuthorizationEndpointRequestParserProcessor {
             if (!ishareRequest && requestParam != null) {
                 new AuthzEndpointRequestObjectParser(session, requestParam, client).parseRequest(request);
             } else if (ishareRequest && requestParam != null) {
-                JWSInput jws = new JWSInput(requestParam);
-                JsonWebToken webtoken = jws.readJsonContent(JsonWebToken.class);
-                Map<String, Object> claims = webtoken.getOtherClaims();
+
+                ISHARE ishare = new ISHARE(session);
+
+                Map<String, Object> claims = ishare.getClaimsFromClientAssertion(requestParam);
                 Object redirectUri = claims.get("redirect_uri");
                 if (redirectUri != null) {
                     request.redirectUriParam = redirectUri.toString();

@@ -157,8 +157,17 @@ public class AuthorizationEndpoint extends AuthorizationEndpointBase {
                 throw new RuntimeException("Request Param required with iSHARE flow");
             }
                     
-            if (!iSHARE.verifyClientTokenAndParty(realm.getIssuer(), clientId, requestParam)) {
-                throw new RuntimeException("Error validating jwt claims");
+            if (iSHARE.isProbablyJwe(requestParam)) {
+                logger.debug("Got encrypted JWE");
+                if (!iSHARE.decryptAndVerifyClientTokenAndParty(realm.getIssuer(), clientId, requestParam)) {
+                    throw new RuntimeException("Error validating decrypted jwt claims");
+                }
+            }
+            else {
+                logger.debug("Got raw JWT");
+                if (!iSHARE.verifyClientTokenAndParty(realm.getIssuer(), clientId, requestParam)) {
+                    throw new RuntimeException("Error validating jwt claims");
+                }
             }
             logger.infof("Client '%s' verified at iSHARE", clientId);
 
