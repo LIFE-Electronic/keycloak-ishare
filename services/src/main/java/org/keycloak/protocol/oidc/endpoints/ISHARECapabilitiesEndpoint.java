@@ -113,7 +113,7 @@ public class ISHARECapabilitiesEndpoint {
         Map<String, Object> claims = new HashMap<>();
         claims.put("iss", issuer);
         claims.put("sub", issuer);
-        
+        claims.put("aud", "public");
         claims.put("jti", UUID.randomUUID().toString());
         
         Instant now = Instant.now();
@@ -150,7 +150,7 @@ public class ISHARECapabilitiesEndpoint {
         List<Object> supportedVersions = new LinkedList<>();
         
         Map<String, Object> version = new HashMap<>();
-        version.put("version", "Keycloak 25.0.0.ishare");
+        version.put("version", "1.7");
 
         Map<String, Object> features = new HashMap<>();
         List<Object> publicFeatures = new LinkedList<>();
@@ -168,7 +168,10 @@ public class ISHARECapabilitiesEndpoint {
 
         features.put("public", publicFeatures);
 
-        version.put("supported_features", features);
+        List<Object> featureList = new LinkedList<>();
+        featureList.add(features);
+
+        version.put("supported_features", featureList);
 
         supportedVersions.add(version);
 
@@ -182,6 +185,7 @@ public class ISHARECapabilitiesEndpoint {
         
         Map<String, Object> capResponse = new HashMap<>();
         capResponse.put("capabilities_token", signedCapabilitiesInfo);
+        //capResponse.put("version", "ishare-25.0.0");
 
         ResponseBuilder responseBuilder = Response.ok(capResponse).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 

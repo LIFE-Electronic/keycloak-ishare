@@ -882,7 +882,11 @@ public class AuthenticationProcessor {
     public Response authenticate() throws AuthenticationFlowException {
         logger.debug("AUTHENTICATE");
         Response challenge = authenticateOnly();
-        if (challenge != null) return challenge;
+        if (challenge != null) {
+            logger.debug("CHALLENGE REQURED!");
+            return challenge;
+        }
+        logger.debug("AUTHENTICATION COMPLETE!");
         return authenticationComplete();
     }
 

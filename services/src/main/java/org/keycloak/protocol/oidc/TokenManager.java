@@ -619,7 +619,9 @@ public class TokenManager {
             userSession.setNote(entry.getKey(), entry.getValue());
         }
 
-        clientSession.setNote(Constants.LEVEL_OF_AUTHENTICATION, String.valueOf(new AcrStore(authSession).getLevelOfAuthenticationFromCurrentAuthentication()));
+        String loa = String.valueOf(new AcrStore(authSession).getLevelOfAuthenticationFromCurrentAuthentication());
+
+        clientSession.setNote(Constants.LEVEL_OF_AUTHENTICATION, loa);
         clientSession.setTimestamp(userSession.getLastSessionRefresh());
 
         // Remove authentication session now (just current tab, not whole "rootAuthenticationSession" in case we have more browser tabs with "authentications in progress")

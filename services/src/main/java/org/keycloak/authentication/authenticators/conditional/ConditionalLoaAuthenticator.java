@@ -92,10 +92,10 @@ public class ConditionalLoaAuthenticator implements ConditionalAuthenticator, Au
         }
         int maxAge = getMaxAge(context);
         if (maxAge == 0) {
-            logger.tracef("Skip updating authenticated level '%d' in condition '%s' for future authentications due max-age set to 0", newLoa, context.getAuthenticatorConfig().getAlias());
+            logger.debugf("Skip updating authenticated level '%d' in condition '%s' for future authentications due max-age set to 0", newLoa, context.getAuthenticatorConfig().getAlias());
             acrStore.setLevelAuthenticatedToCurrentRequest(newLoa);
         } else {
-            logger.tracef("Updating LoA to '%d' in the condition '%s' when authenticating session '%s'. Max age is %d.",
+            logger.debugf("Updating LoA to '%d' in the condition '%s' when authenticating session '%s'. Max age is %d.",
                     newLoa, context.getAuthenticatorConfig().getAlias(), authSession.getParentSession().getId(), maxAge);
             acrStore.setLevelAuthenticated(newLoa);
         }
@@ -106,14 +106,14 @@ public class ConditionalLoaAuthenticator implements ConditionalAuthenticator, Au
         AuthenticationSessionModel authSession = session.getContext().getAuthenticationSession();
         AcrStore acrStore = new AcrStore(authSession);
 
-        logger.tracef("Finished authentication at level %d when authenticating authSession '%s'.", acrStore.getLevelOfAuthenticationFromCurrentAuthentication(), authSession.getParentSession().getId());
+        logger.debugf("Finished authentication at level %d when authenticating authSession '%s'.", acrStore.getLevelOfAuthenticationFromCurrentAuthentication(), authSession.getParentSession().getId());
         if (acrStore.isLevelOfAuthenticationForced() && !acrStore.isLevelOfAuthenticationSatisfiedFromCurrentAuthentication()) {
             String details = String.format("Forced level of authentication did not meet the requirements. Requested level: %d, Fulfilled level: %d",
                     acrStore.getRequestedLevelOfAuthentication(), acrStore.getLevelOfAuthenticationFromCurrentAuthentication());
             throw new AuthenticationFlowException(AuthenticationFlowError.GENERIC_AUTHENTICATION_ERROR, details, Messages.ACR_NOT_FULFILLED);
         }
 
-        logger.tracef("Updating authenticated levels in authSession '%s' to user session note for future authentications: %s", authSession.getParentSession().getId(), authSession.getAuthNote(Constants.LOA_MAP));
+        logger.debugf("Updating authenticated levels in authSession '%s' to user session note for future authentications: %s", authSession.getParentSession().getId(), authSession.getAuthNote(Constants.LOA_MAP));
         authSession.setUserSessionNote(Constants.LOA_MAP, authSession.getAuthNote(Constants.LOA_MAP));
     }
 

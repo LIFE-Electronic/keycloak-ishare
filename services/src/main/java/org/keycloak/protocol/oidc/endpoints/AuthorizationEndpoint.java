@@ -21,6 +21,7 @@ import org.jboss.logging.Logger;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.authentication.AuthenticationProcessor;
 import org.keycloak.authentication.authenticators.client.ISHAREClientAuthenticator;
+import org.keycloak.authentication.authenticators.util.AcrStore;
 import org.keycloak.common.Profile;
 import org.keycloak.constants.AdapterConstants;
 import org.keycloak.crypto.Algorithm;
@@ -392,7 +393,9 @@ public class AuthorizationEndpoint extends AuthorizationEndpointBase {
                     return Constants.MINIMUM_LOA;
                 }
             }
-        }).min().ifPresent(loa -> authenticationSession.setClientNote(Constants.REQUESTED_LEVEL_OF_AUTHENTICATION, String.valueOf(loa)));
+        }).min().ifPresent(loa -> {
+            authenticationSession.setClientNote(Constants.REQUESTED_LEVEL_OF_AUTHENTICATION, String.valueOf(loa));
+        });
 
         if (request.getAdditionalReqParams() != null) {
             for (String paramName : request.getAdditionalReqParams().keySet()) {
@@ -405,7 +408,10 @@ public class AuthorizationEndpoint extends AuthorizationEndpointBase {
         this.event.event(EventType.LOGIN);
         authenticationSession.setAuthNote(Details.AUTH_TYPE, CODE_AUTH_TYPE);
 
-        return handleBrowserAuthenticationRequest(authenticationSession, new OIDCLoginProtocol(session, realm, session.getContext().getUri(), headers, event), TokenUtil.hasPrompt(request.getPrompt(), OIDCLoginProtocol.PROMPT_VALUE_NONE), false);
+        OIDCLoginProtocol oidc = new OIDCLoginProtocol(session, realm, session.getContext().getUri(), headers, event);
+        boolean is_passive = TokenUtil.hasPrompt(request.getPrompt(), OIDCLoginProtocol.PROMPT_VALUE_NONE);
+        boolean redirect_to_authentication = false;
+        return handleBrowserAuthenticationRequest(authenticationSession, oidc, is_passive, redirect_to_authentication);
     }
 
     private Response buildRegister() {

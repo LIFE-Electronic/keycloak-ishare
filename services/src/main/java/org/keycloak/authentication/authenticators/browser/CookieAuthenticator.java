@@ -17,8 +17,10 @@
 
 package org.keycloak.authentication.authenticators.browser;
 
+import org.jboss.logging.Logger;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.Authenticator;
+import org.keycloak.authentication.DefaultAuthenticationFlow;
 import org.keycloak.authentication.authenticators.util.AcrStore;
 import org.keycloak.authentication.authenticators.util.AuthenticatorUtils;
 import org.keycloak.models.Constants;
@@ -35,6 +37,8 @@ import org.keycloak.sessions.AuthenticationSessionModel;
  * @version $Revision: 1 $
  */
 public class CookieAuthenticator implements Authenticator {
+
+    private static final Logger logger = Logger.getLogger(CookieAuthenticator.class);
 
     @Override
     public boolean requiresUser() {
@@ -65,7 +69,9 @@ public class CookieAuthenticator implements Authenticator {
                 int previouslyAuthenticatedLevel = acrStore.getHighestAuthenticatedLevelFromPreviousAuthentication();
                 AuthenticatorUtils.updateCompletedExecutions(context.getAuthenticationSession(), authResult.getSession(), context.getExecution().getId());
 
-                if (acrStore.getRequestedLevelOfAuthentication() > previouslyAuthenticatedLevel) {
+                int requestedLevel = acrStore.getRequestedLevelOfAuthentication();
+                logger.debugf("CookieAuthenticator: requested level: %d, previouslyAuthenticatedLevel: %d", requestedLevel, previouslyAuthenticatedLevel);
+                if (requestedLevel > previouslyAuthenticatedLevel) {
                     // Step-up authentication, we keep the loa from the existing user session.
                     // The cookie alone is not enough and other authentications must follow.
                     acrStore.setLevelAuthenticatedToCurrentRequest(previouslyAuthenticatedLevel);

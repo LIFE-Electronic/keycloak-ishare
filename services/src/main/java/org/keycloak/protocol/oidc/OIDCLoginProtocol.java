@@ -25,6 +25,7 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.OAuthErrorException;
 import org.keycloak.TokenIdGenerator;
 import org.keycloak.authentication.RequiredActionProvider;
+import org.keycloak.authentication.authenticators.util.AcrStore;
 import org.keycloak.common.util.Time;
 import org.keycloak.connections.httpclient.HttpClientProvider;
 import org.keycloak.constants.AdapterConstants;

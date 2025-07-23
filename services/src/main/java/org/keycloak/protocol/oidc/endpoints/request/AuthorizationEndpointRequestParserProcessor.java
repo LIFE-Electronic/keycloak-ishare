@@ -101,8 +101,22 @@ public class AuthorizationEndpointRequestParserProcessor {
                 JWSInput jws = new JWSInput(requestParam);
                 JsonWebToken webtoken = jws.readJsonContent(JsonWebToken.class);
                 Map<String, Object> claims = webtoken.getOtherClaims();
-                String redirectUri = claims.get("redirect_uri").toString();
-                request.redirectUriParam = redirectUri;
+                Object redirectUri = claims.get("redirect_uri");
+                if (redirectUri != null) {
+                    request.redirectUriParam = redirectUri.toString();
+                }
+                Object nonce = claims.get("nonce");
+                if (nonce != null) {
+                    request.nonce = nonce.toString();
+                }
+                Object acr_values = claims.get("acr_values");
+                if (acr_values != null) {
+                    String[] acr_values_str = acr_values.toString().split(" ");
+                    if (acr_values_str.length > 0 && !acr_values_str[0].isEmpty()) {
+                        request.acr = acr_values_str[0];
+                    }
+                }
+                
             } else if (requestUriParam != null) {
                 // Define, if the request is `PAR` or usual `Request Object`.
                 RequestUriType requestUriType = getRequestUriType(requestUriParam);

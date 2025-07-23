@@ -170,7 +170,7 @@ public class AcrStore {
             }
         }
 
-        logger.tracef("Highest authenticated level from previous authentication of client '%s' in authentication '%s' was: %d",
+        logger.debugf("Highest authenticated level from previous authentication of client '%s' in authentication '%s' was: %d",
                 authSession.getClient().getClientId(), authSession.getParentSession().getId(), maxLevel);
         return maxLevel;
     }
