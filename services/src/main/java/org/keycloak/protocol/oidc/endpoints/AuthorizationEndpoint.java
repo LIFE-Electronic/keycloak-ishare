@@ -146,7 +146,8 @@ public class AuthorizationEndpoint extends AuthorizationEndpointBase {
             throw new ErrorPageException(session, authenticationSession, cpe.getErrorStatus(), cpe.getErrorDetail());
         }
 
-        boolean ishareRequest = AuthorizationEndpointRequestParserProcessor.hasScope(event, session, params, "ishare");
+        boolean ishareRequest = AuthorizationEndpointRequestParserProcessor.hasScope(event, session, params, "ishare") ||
+                                AuthorizationEndpointRequestParserProcessor.hasScope(event, session, params, "iSHARE");;
 
         if (ishareRequest && clientId != null) {
             // create client dynamically
@@ -285,12 +286,12 @@ public class AuthorizationEndpoint extends AuthorizationEndpointBase {
             case FORGOT_CREDENTIALS:
                 return buildForgotCredential();
             case CODE:
-                return buildAuthorizationCodeAuthorizationResponse();
+                return buildAuthorizationCodeAuthorizationResponse(ishareRequest);
         }
 
         throw new RuntimeException("Unknown action " + action);
     }
-
+ 
     public AuthorizationEndpoint register() {
         event.event(EventType.REGISTER);
         action = Action.REGISTER;
@@ -419,13 +420,13 @@ public class AuthorizationEndpoint extends AuthorizationEndpointBase {
         }
     }
 
-    private Response buildAuthorizationCodeAuthorizationResponse() {
+    private Response buildAuthorizationCodeAuthorizationResponse(boolean is_ishare_request) {
         this.event.event(EventType.LOGIN);
         authenticationSession.setAuthNote(Details.AUTH_TYPE, CODE_AUTH_TYPE);
 
         OIDCLoginProtocol oidc = new OIDCLoginProtocol(session, realm, session.getContext().getUri(), headers, event);
         boolean is_passive = TokenUtil.hasPrompt(request.getPrompt(), OIDCLoginProtocol.PROMPT_VALUE_NONE);
-        boolean redirect_to_authentication = false;
+        boolean redirect_to_authentication = is_ishare_request; // iSHARE requires a redirect instead of a 200 OK
         return handleBrowserAuthenticationRequest(authenticationSession, oidc, is_passive, redirect_to_authentication);
     }
 

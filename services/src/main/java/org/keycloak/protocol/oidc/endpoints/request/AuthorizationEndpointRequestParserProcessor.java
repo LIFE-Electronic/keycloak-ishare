@@ -58,7 +58,9 @@ public class AuthorizationEndpointRequestParserProcessor {
         try {
 
             // check if we have an iSHARE request
-            boolean ishareRequest = AuthorizationEndpointRequestParserProcessor.hasScope(event, session, requestParams, "ishare");
+            boolean ishareRequest = AuthorizationEndpointRequestParserProcessor.hasScope(event, session, requestParams, "ishare") || 
+                                    AuthorizationEndpointRequestParserProcessor.hasScope(event, session, requestParams, "iSHARE");;
+            
 
             AuthorizationEndpointRequest request = new AuthorizationEndpointRequest();
             boolean isResponseTypeParameterRequired = isResponseTypeParameterRequired(requestParams, endpointType);

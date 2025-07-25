@@ -109,7 +109,7 @@ public class ISHARECapabilitiesEndpoint {
         } else {
             issuer = realm.getIssuer();
         }
-        
+
         Map<String, Object> claims = new HashMap<>();
         claims.put("iss", issuer);
         claims.put("sub", issuer);
@@ -143,8 +143,10 @@ public class ISHARECapabilitiesEndpoint {
         Map<String, Object> capInfo = new HashMap<>();
         capInfo.put("party_id", issuer);
 
-        List<String> roles = new LinkedList<>();
-        roles.add("IdentityProvider");
+        List<Object> roles = new LinkedList<>();
+        Map<String, Object> our_role = new HashMap<>();
+        our_role.put("role", "IdentityProvider");
+        roles.add(our_role);
         capInfo.put("ishare_roles", roles);
 
         List<Object> supportedVersions = new LinkedList<>();
@@ -159,12 +161,12 @@ public class ISHARECapabilitiesEndpoint {
         String userinfoEP = oidcConfig.getUserinfoEndpoint();
         String tokenEP = oidcConfig.getTokenEndpoint();
         String authEP = oidcConfig.getAuthorizationEndpoint();
-        // tbd for conf test?
-        //String loginEP = "";
+        String capEP = userinfoEP.replace("userinfo", "capabilities"); // a wicked hacky hack
 
-        publicFeatures.add(createFeature("access-token", "OIDC iSHARE Access Token", "Call to get access token for code", tokenEP, null));
-        publicFeatures.add(createFeature("authorize", "OIDC iSHARE Authorization", "Initiates iSHARE OIDC Flow", authEP, null));
-        publicFeatures.add(createFeature("user-info", "OIDC iSHARE User Info", "Obtains user info", userinfoEP, tokenEP));
+        publicFeatures.add(createFeature("oidc token", "OIDC iSHARE Access Token", "Call to get access token for code", tokenEP, null));
+        publicFeatures.add(createFeature("oidc authorize", "OIDC iSHARE Authorization", "Initiates iSHARE OIDC Flow", authEP, null));
+        publicFeatures.add(createFeature("oidc user info", "OIDC iSHARE User Info", "Obtains user info", userinfoEP, tokenEP));
+        publicFeatures.add(createFeature("capabilities", "capabilities", "Retrieves iSHARE capabilities", capEP, null));
 
         features.put("public", publicFeatures);
 

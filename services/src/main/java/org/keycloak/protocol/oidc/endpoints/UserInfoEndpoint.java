@@ -80,8 +80,12 @@ import jakarta.ws.rs.core.MultivaluedMap;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -291,6 +295,12 @@ public class UserInfoEndpoint {
             String audience = clientModel.getClientId();
             claims.put("iss", issuerUrl);
             claims.put("aud", audience);
+            claims.put("jti", UUID.randomUUID().toString());
+        
+            Instant now = Instant.now();
+            claims.put("iat", now.getEpochSecond());
+            claims.put("nbf", now.getEpochSecond());
+            claims.put("exp", Date.from(now.plus(30L, ChronoUnit.SECONDS)).getTime() / 1000);
 
             String signatureAlgorithm = session.tokens().signatureAlgorithm(TokenCategory.USERINFO);
 
