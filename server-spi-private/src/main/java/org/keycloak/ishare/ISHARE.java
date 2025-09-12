@@ -228,12 +228,12 @@ public class ISHARE {
         try {
             JWE jwe = this.getDecryptedJWE(incoming_token);
 
-            byte[] header64 = Base64Url.decode(jwe.getBase64Header());
-            JWEHeaderCerts headerCerts = JsonSerialization.readValue(header64, JWEHeaderCerts.class);
+            byte[] content = jwe.getContent();
+            String client_assertion = new String(content, StandardCharsets.UTF_8);
 
-            String our_client_assertion = createSatelliteClientAssertion(idpEORI, this.session);
-            
-            return verifyClientAtSatellite(clientId, headerCerts.x5c[0], idpEORI, our_client_assertion);
+            logger.infof("Got decrypted JWT token: %s", client_assertion);
+
+            return this.verifyClientTokenAndParty(idpEORI, clientId, client_assertion);
         } catch (Exception e) {
             logger.errorf("Exception validating client_assertion: %s", e.toString());
         }        
@@ -489,14 +489,19 @@ public class ISHARE {
             try {
                 JWE jwe = this.getDecryptedJWE(assertion);
 
-                String jsonContent = new String(jwe.getContent(), StandardCharsets.UTF_8);
+                String nested_assertion = new String(jwe.getContent(), StandardCharsets.UTF_8);
 
-                return JsonSerialization.readValue(jsonContent, Map.class);
+                JWSInput jws = new JWSInput(nested_assertion);
+
+                JsonWebToken webtoken = jws.readJsonContent(JsonWebToken.class);
+
+                Map<String, Object> claims = webtoken.getOtherClaims();
+                return claims;
             } catch (JWEException e) {
                 logger.errorf("JWE Exception: %s", e.toString());
                 return new HashMap<>();
-            } catch (IOException e) {
-                logger.errorf("JSON Exception: %s", e.toString());
+            } catch (JWSInputException e) {
+                logger.errorf("Invalid JWS Input: %s", e.toString());
                 return new HashMap<>();
             }
         } else {
