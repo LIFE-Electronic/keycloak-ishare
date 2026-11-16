@@ -1,0 +1,52 @@
+name: Container builds
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Build Keycloak distribution
+        run: ./mvnw install -B -DskipTests -DskipExamples
+      - name: Build image
+        run: |
+          cp quarkus/dist/target/keycloak-*.tar.gz quarkus/container/
+          dist=$(basename quarkus/container/keycloak-*.tar.gz)
+          docker build --build-arg KEYCLOAK_DIST="$dist" -t keycloak-ishare:ci quarkus/container
+      - name: Check executable starts
+        run: docker run --rm --network none keycloak-ishare:ci --version
+      - name: Publish image
+        if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+        env:
+          REGISTRY_HOST: ${{ secrets.REGISTRY_HOST }}
+          REGISTRY_USERNAME: ${{ secrets.REGISTRY_USERNAME }}
+          REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+        run: |
+          : "${REGISTRY_HOST:?Set the REGISTRY_HOST repository secret}"
+          : "${REGISTRY_USERNAME:?Set the REGISTRY_USERNAME repository secret}"
+          : "${REGISTRY_PASSWORD:?Set the REGISTRY_PASSWORD repository secret}"
+          printf '%s' "$REGISTRY_PASSWORD" | docker login "$REGISTRY_HOST" --username "$REGISTRY_USERNAME" --password-stdin
+
+          docker tag keycloak-ishare:ci "$REGISTRY_HOST/keycloak-ishare:$GITHUB_SHA"
+          docker push "$REGISTRY_HOST/keycloak-ishare:$GITHUB_SHA"
+          docker tag keycloak-ishare:ci "$REGISTRY_HOST/keycloak-ishare:latest"
+          docker push "$REGISTRY_HOST/keycloak-ishare:latest"

@@ -47,6 +47,7 @@ class ISHAREAuthenticatorConfig implements Serializable {
 
     @JsonProperty(value="ishare-ca-file", required=true)
     public String ishareCaFile;
+
 }
 
 class ISHAREJWSHeader extends JWSHeader
@@ -60,7 +61,7 @@ class ISHAREJWSHeader extends JWSHeader
 }
 
 class ISHARESatellitePartiesResponse implements Serializable {
-    @JsonProperty("party_token")
+    @JsonProperty("partyToken")
     public String party_token;
 }
 
@@ -84,41 +85,23 @@ class ISHARESatelliteResponse implements Serializable {
 }
 
 class ISHAREPartyToken extends JsonWebToken {
-    @JsonProperty("party_info")
+    @JsonProperty("partyInfo")
     public ISHAREPartyInfo party_info;
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class Adherence implements Serializable
-{
-    @JsonProperty("status")
-    public String status;
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 class ISHAREPartyInfo implements Serializable {
-    @JsonProperty("party_id")
+    @JsonProperty("id")
     public String party_id;
 
-    @JsonProperty("registrar_id")
-    public String registrar_id;
-
-    @JsonProperty("adherence")
-    public Adherence adherence;
-
-    @JsonProperty("certificates")
-    public List<ISHARECertificateInfo> certificates;
+    @JsonProperty("claims")
+    public List<ISHAREPartyClaim> claims = Collections.emptyList();
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class ISHARECertificateInfo implements Serializable {
-    @JsonProperty("subject_name")
-    public String subject_name;
-
-    @JsonProperty("certificate_type")
-    public String certificate_type;
-
-    @JsonProperty("x5c")
+class ISHAREPartyClaim implements Serializable {
+    public String type;
+    public String status;
     public String x5c;
 }
 
@@ -204,7 +187,7 @@ public class ISHARE {
             logger.errorf("Exception validating client_assertion: %s", e.toString());
         }        
 
-        return true;
+        return false;
     }
 
     public boolean isProbablyJwe(String incoming_token) {
@@ -433,27 +416,15 @@ public class ISHARE {
         
         ISHAREPartyToken partyInfoToken = JsonSerialization.readValue(contentBytes, ISHAREPartyToken.class);
 
-        if (!partyInfoToken.party_info.party_id.equals(clientId)) {
-            logger.errorf("invalid party_id in party token: %s. Should be: %s", partyInfoToken.party_info.party_id, clientId);
+        ISHAREPartyInfo party = partyInfoToken.party_info;
+        if (party == null || !clientId.equals(party.party_id) || party.claims == null) {
             return false;
         }
-
-        if (!partyInfoToken.party_info.adherence.status.equals("Active")) {
-            logger.error("party not active");
-            return false;
-        }
-
-        List<ISHARECertificateInfo> storedCerts = partyInfoToken.party_info.certificates;
-        boolean atLeastOneCert = storedCerts.stream().anyMatch(cert -> {
-            return cert.x5c.equals(clientCert);
-        });
-
-        if (!atLeastOneCert) {
-            logger.error("no matching certificate found in jwt");
-            return false;
-        }
-
-        return atLeastOneCert;
+        boolean active = party.claims.stream().anyMatch(claim -> claim != null
+                && "frameworkCompliance".equals(claim.type) && "active".equals(claim.status));
+        boolean certificateMatches = party.claims.stream().anyMatch(claim -> claim != null
+                && "x509Certificate".equals(claim.type) && clientCert.equals(claim.x5c));
+        return active && certificateMatches;
     }
 
     public boolean validateJwtToken(JsonWebToken token, String idpEORI) throws Exception
@@ -520,7 +491,7 @@ public class ISHARE {
     public boolean validateJwtCert(JWSInput jws) throws Exception
     {            
         String[] x5c = getX5C(jws);
-        if (x5c.length == 0) {
+        if (x5c == null || x5c.length == 0) {
             logger.error("x5c header value empty");
             return false;
         }
