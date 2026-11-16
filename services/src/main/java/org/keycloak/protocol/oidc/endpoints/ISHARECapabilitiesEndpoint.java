@@ -140,53 +140,19 @@ public class ISHARECapabilitiesEndpoint {
             }
         }
 
-        Map<String, Object> capInfo = new HashMap<>();
-        capInfo.put("party_id", issuer);
-
-        List<Object> roles = new LinkedList<>();
-        Map<String, Object> our_role = new HashMap<>();
-        our_role.put("role", "IdentityProvider");
-        roles.add(our_role);
-        capInfo.put("ishare_roles", roles);
-
-        List<Object> supportedVersions = new LinkedList<>();
-        
-        Map<String, Object> version = new HashMap<>();
-        version.put("version", "1.7");
-
-        Map<String, Object> features = new HashMap<>();
-        List<Object> publicFeatures = new LinkedList<>();
-
-
         String userinfoEP = oidcConfig.getUserinfoEndpoint();
         String tokenEP = oidcConfig.getTokenEndpoint();
         String authEP = oidcConfig.getAuthorizationEndpoint();
-        String capEP = userinfoEP.replace("userinfo", "capabilities"); // a wicked hacky hack
+        String capEP = userinfoEP.replace("userinfo", "capabilities");
 
-        publicFeatures.add(createFeature("oidc token", "OIDC iSHARE Access Token", "Call to get access token for code", tokenEP, null));
-        publicFeatures.add(createFeature("oidc authorize", "OIDC iSHARE Authorization", "Initiates iSHARE OIDC Flow", authEP, null));
-        publicFeatures.add(createFeature("oidc user info", "OIDC iSHARE User Info", "Obtains user info", userinfoEP, tokenEP));
-        publicFeatures.add(createFeature("capabilities", "capabilities", "Retrieves iSHARE capabilities", capEP, null));
-
-        features.put("public", publicFeatures);
-
-        List<Object> featureList = new LinkedList<>();
-        featureList.add(features);
-
-        version.put("supported_features", featureList);
-
-        supportedVersions.add(version);
-
-        capInfo.put("supported_versions", supportedVersions);
-
-        claims.put("capabilities_info", capInfo);
+        claims.put("capabilitiesInfo", createCapabilities(tokenEP, authEP, userinfoEP, capEP));
 
         String signedCapabilitiesInfo = jwsBuilder.type("JWT").jsonContent(claims).sign(signer);
 
         //ResponseBuilder responseBuilder = Response.ok(signedCapabilitiesInfo).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JWT);
         
         Map<String, Object> capResponse = new HashMap<>();
-        capResponse.put("capabilities_token", signedCapabilitiesInfo);
+        capResponse.put("capabilitiesToken", signedCapabilitiesInfo);
         //capResponse.put("version", "ishare-25.0.0");
 
         ResponseBuilder responseBuilder = Response.ok(capResponse).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON);
@@ -196,17 +162,35 @@ public class ISHARECapabilitiesEndpoint {
         return cors.builder(responseBuilder).build();
     }
 
-    private Map<String, Object> createFeature(String id, String name, String desc, String url, String token_endpoint)
-    {
-        Map<String, Object> feature = new HashMap<>();
-        feature.put("id", id);
-        feature.put("feature", name);
-        feature.put("description", desc);
-        feature.put("url", url);
-        if (token_endpoint != null) {
-            feature.put("token_endpoint", token_endpoint);
+    static Map<String, Object> createCapabilities(String tokenEP, String authEP, String userinfoEP, String capEP) {
+        List<Object> services = new LinkedList<>();
+        services.add(createService("request-oauth-token", "OIDC iSHARE Access Token",
+                "Call to get access token for code", tokenEP, null, "POST"));
+        services.add(createService("authorize", "OIDC iSHARE Authorization",
+                "Initiates iSHARE OIDC Flow", authEP, null, "GET", "POST"));
+        services.add(createService("get-user-info", "OIDC iSHARE User Info",
+                "Obtains user info", userinfoEP, tokenEP, "GET", "POST"));
+        services.add(createService("get-capabilities-token", "capabilities",
+                "Retrieves iSHARE capabilities", capEP, null, "GET"));
+        return Map.of("publicServices", services);
+    }
+
+    private static Map<String, Object> createService(String id, String name, String desc, String url,
+            String tokenEndpoint, String... methods) {
+        Map<String, Object> service = new HashMap<>();
+        service.put("identifier", id);
+        service.put("title", name);
+        service.put("description", desc);
+        service.put("endpointURL", url);
+        service.put("status", "active");
+        service.put("serviceType", "framework-defined");
+        service.put("version", Map.of("compliesWithFrameworkVersions", List.of("3.0"),
+                "capabilityVersion", "1.0"));
+        service.put("methods", List.of(methods));
+        if (tokenEndpoint != null) {
+            service.put("tokenEndpoint", tokenEndpoint);
         }
-        return feature;
+        return service;
     }
 
     private void setupCors() {

@@ -11,6 +11,7 @@ import org.keycloak.jose.jwe.JWEException;
 import org.keycloak.jose.jws.JWSBuilder;
 import org.keycloak.jose.jws.JWSInput;
 import org.keycloak.jose.jws.JWSInputException;
+import org.keycloak.jose.jws.crypto.RSAProvider;
 import org.keycloak.representations.JsonWebToken;
 import org.keycloak.common.util.Base64Url;
 import org.keycloak.common.util.PemUtils;
@@ -47,6 +48,17 @@ class ISHAREAuthenticatorConfig implements Serializable {
 
     @JsonProperty(value="ishare-ca-file", required=true)
     public String ishareCaFile;
+
+    @JsonProperty("allowed-dataspaces")
+    public ISHAREAllowedDataspaces allowedDataspaces;
+}
+
+class ISHAREAllowedDataspaces implements Serializable {
+    @JsonProperty("dataspace_ids")
+    public List<String> dataspaceIds = Collections.emptyList();
+
+    @JsonProperty("required_agreement_types")
+    public List<String> requiredAgreementTypes = Collections.emptyList();
 }
 
 class ISHAREJWSHeader extends JWSHeader
@@ -60,7 +72,7 @@ class ISHAREJWSHeader extends JWSHeader
 }
 
 class ISHARESatellitePartiesResponse implements Serializable {
-    @JsonProperty("party_token")
+    @JsonProperty("partyToken")
     public String party_token;
 }
 
@@ -84,42 +96,56 @@ class ISHARESatelliteResponse implements Serializable {
 }
 
 class ISHAREPartyToken extends JsonWebToken {
-    @JsonProperty("party_info")
+    @JsonProperty("partyInfo")
     public ISHAREPartyInfo party_info;
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class Adherence implements Serializable
-{
-    @JsonProperty("status")
-    public String status;
-}
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 class ISHAREPartyInfo implements Serializable {
-    @JsonProperty("party_id")
+    @JsonProperty("id")
     public String party_id;
 
-    @JsonProperty("registrar_id")
-    public String registrar_id;
-
-    @JsonProperty("adherence")
-    public Adherence adherence;
-
-    @JsonProperty("certificates")
-    public List<ISHARECertificateInfo> certificates;
+    @JsonProperty("claims")
+    public List<ISHAREPartyClaim> claims = Collections.emptyList();
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-class ISHARECertificateInfo implements Serializable {
-    @JsonProperty("subject_name")
-    public String subject_name;
-
-    @JsonProperty("certificate_type")
-    public String certificate_type;
-
-    @JsonProperty("x5c")
+class ISHAREPartyClaim implements Serializable {
+    public String type;
+    public String status;
+    public String endDate;
+    public String dataspaceId;
+    public String agreementType;
     public String x5c;
+}
+
+class ISHAREPartyValidation {
+    static boolean validate(ISHAREPartyInfo party, String clientId, String clientCert,
+            ISHAREAllowedDataspaces allowedDataspaces) {
+        if (party == null || !clientId.equals(party.party_id) || party.claims == null) {
+            return false;
+        }
+        boolean active = party.claims.stream().anyMatch(claim -> claim != null
+                && "frameworkCompliance".equals(claim.type) && "active".equals(claim.status));
+        boolean certificateMatches = party.claims.stream().anyMatch(claim -> claim != null
+                && "x509Certificate".equals(claim.type) && clientCert.equals(claim.x5c));
+        if (!active || !certificateMatches) {
+            return false;
+        }
+        if (allowedDataspaces == null) {
+            return true;
+        }
+        return allowedDataspaces.dataspaceIds.stream().anyMatch(dataspace -> {
+            boolean member = party.claims.stream().anyMatch(claim -> claim != null
+                    && "dataspaceMembership".equals(claim.type) && "active".equals(claim.status)
+                    && dataspace.equals(claim.dataspaceId));
+            boolean agreements = allowedDataspaces.requiredAgreementTypes.stream().allMatch(type ->
+                    party.claims.stream().anyMatch(claim -> claim != null
+                            && "dataspaceAgreement".equals(claim.type)
+                            && dataspace.equals(claim.dataspaceId) && type.equals(claim.agreementType)));
+            return member && agreements;
+        });
+    }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -135,6 +161,7 @@ public class ISHARE {
     String iSHARESatellitePartyId;
     String iSHARESatelliteBaseUrl;
     X509Certificate iSHARE_CA;
+    ISHAREAllowedDataspaces allowedDataspaces;
     KeycloakSession session;
 
     public ISHARE(KeycloakSession session) throws RuntimeException {
@@ -159,6 +186,7 @@ public class ISHARE {
 
             iSHARESatellitePartyId = cfg.satelliteId;
             iSHARESatelliteBaseUrl = cfg.satelliteUrl;
+            allowedDataspaces = cfg.allowedDataspaces;
 
             FileInputStream inStream = new FileInputStream(cfg.ishareCaFile);
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -204,7 +232,7 @@ public class ISHARE {
             logger.errorf("Exception validating client_assertion: %s", e.toString());
         }        
 
-        return true;
+        return false;
     }
 
     public boolean isProbablyJwe(String incoming_token) {
@@ -433,27 +461,7 @@ public class ISHARE {
         
         ISHAREPartyToken partyInfoToken = JsonSerialization.readValue(contentBytes, ISHAREPartyToken.class);
 
-        if (!partyInfoToken.party_info.party_id.equals(clientId)) {
-            logger.errorf("invalid party_id in party token: %s. Should be: %s", partyInfoToken.party_info.party_id, clientId);
-            return false;
-        }
-
-        if (!partyInfoToken.party_info.adherence.status.equals("Active")) {
-            logger.error("party not active");
-            return false;
-        }
-
-        List<ISHARECertificateInfo> storedCerts = partyInfoToken.party_info.certificates;
-        boolean atLeastOneCert = storedCerts.stream().anyMatch(cert -> {
-            return cert.x5c.equals(clientCert);
-        });
-
-        if (!atLeastOneCert) {
-            logger.error("no matching certificate found in jwt");
-            return false;
-        }
-
-        return atLeastOneCert;
+        return ISHAREPartyValidation.validate(partyInfoToken.party_info, clientId, clientCert, allowedDataspaces);
     }
 
     public boolean validateJwtToken(JsonWebToken token, String idpEORI) throws Exception
@@ -520,7 +528,7 @@ public class ISHARE {
     public boolean validateJwtCert(JWSInput jws) throws Exception
     {            
         String[] x5c = getX5C(jws);
-        if (x5c.length == 0) {
+        if (x5c == null || x5c.length == 0) {
             logger.error("x5c header value empty");
             return false;
         }
@@ -536,6 +544,7 @@ public class ISHARE {
             
         cert.verify(iSHARE_CA.getPublicKey());
 
-        return true;
+        return "RS256".equals(jws.getHeader().getAlgorithm().name())
+                && RSAProvider.verify(jws, cert.getPublicKey());
     }
 }
