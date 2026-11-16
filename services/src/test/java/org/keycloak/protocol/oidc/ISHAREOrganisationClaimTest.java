@@ -69,12 +69,14 @@ public class ISHAREOrganisationClaimTest {
     }
 
     @Test
-    public void rejectsMissingOrMalformedOrganisationInBothTokens() {
-        for (String companyId : new String[]{null, "", "NL.EORI.TEST", "NTRNL-has space"}) {
-            assertThrows(IllegalStateException.class, () -> manager.transformIDToken(
-                    session, new IDToken(), userSession(companyId), context("openid iSHARE")));
-            assertThrows(IllegalStateException.class, () -> manager.transformUserInfoAccessToken(
-                    session, new AccessToken(), userSession(companyId), context("openid iSHARE")));
+    public void preservesExistingCompanyIdsWithoutFormatValidation() {
+        for (String companyId : new String[]{null, "", "NL.EORI.LIFEELEC4DMI", "NTRNL-has space"}) {
+            IDToken id = manager.transformIDToken(
+                    session, new IDToken(), userSession(companyId), context("openid iSHARE"));
+            AccessToken info = manager.transformUserInfoAccessToken(
+                    session, new AccessToken(), userSession(companyId), context("openid iSHARE"));
+            assertEquals(companyId, id.getOtherClaims().get("organisationIdentifier"));
+            assertEquals(companyId, info.getOtherClaims().get("organisationIdentifier"));
         }
     }
 }

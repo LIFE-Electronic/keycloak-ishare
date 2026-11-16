@@ -829,10 +829,6 @@ public class TokenManager {
             if (organisationIdentifier == null) {
                 organisationIdentifier = userSession.getUser().getFirstAttribute("companyId");
             }
-            if (!(organisationIdentifier instanceof String)
-                    || !((String) organisationIdentifier).matches("[A-Z]{5}-\\S+")) {
-                throw new IllegalStateException("iSHARE requires an organisationIdentifier in ETSI format; configure the claim mapper or the user's companyId");
-            }
             token.getOtherClaims().put("organisationIdentifier", organisationIdentifier);
         }
         return token;
@@ -991,10 +987,6 @@ public class TokenManager {
             Object organisationIdentifier = token.getOtherClaims().get("organisationIdentifier");
             if (organisationIdentifier == null) {
                 organisationIdentifier = userSession.getUser().getFirstAttribute("companyId");
-            }
-            if (!(organisationIdentifier instanceof String)
-                    || !((String) organisationIdentifier).matches("[A-Z]{5}-\\S+")) {
-                throw new IllegalStateException("iSHARE requires an organisationIdentifier in ETSI format; configure the claim mapper or the user's companyId");
             }
             token.getOtherClaims().put("organisationIdentifier", organisationIdentifier);
         }
