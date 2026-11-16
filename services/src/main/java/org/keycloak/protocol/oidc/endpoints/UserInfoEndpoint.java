@@ -283,7 +283,9 @@ public class UserInfoEndpoint {
         Response.ResponseBuilder responseBuilder;
         OIDCAdvancedConfigWrapper cfg = OIDCAdvancedConfigWrapper.fromClientModel(clientModel);
 
-        if (cfg.isUserInfoSignatureRequired()) {
+        boolean ishareRequest = TokenUtil.hasScope(token.getScope(), "iSHARE")
+                || TokenUtil.hasScope(token.getScope(), "ishare");
+        if (ishareRequest || cfg.isUserInfoSignatureRequired()) {
 
 
             String issuerUrl;
@@ -302,7 +304,7 @@ public class UserInfoEndpoint {
             claims.put("nbf", now.getEpochSecond());
             claims.put("exp", Date.from(now.plus(30L, ChronoUnit.SECONDS)).getTime() / 1000);
 
-            String signatureAlgorithm = session.tokens().signatureAlgorithm(TokenCategory.USERINFO);
+            String signatureAlgorithm = ishareRequest ? "RS256" : session.tokens().signatureAlgorithm(TokenCategory.USERINFO);
 
             SignatureProvider signatureProvider = session.getProvider(SignatureProvider.class, signatureAlgorithm);
             SignatureSignerContext signer = signatureProvider.signer();
@@ -323,8 +325,10 @@ public class UserInfoEndpoint {
             String signedUserInfo = jwsBuilder.type("JWT").jsonContent(claims).sign(signer);
 
             try {
-                responseBuilder = Response.ok(cfg.isUserInfoEncryptionRequired() ? jweFromContent(signedUserInfo, "JWT") :
-                        signedUserInfo).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JWT);
+                responseBuilder = ishareRequest
+                        ? Response.ok(Map.of("userinfoToken", signedUserInfo)).type(MediaType.APPLICATION_JSON)
+                        : Response.ok(cfg.isUserInfoEncryptionRequired() ? jweFromContent(signedUserInfo, "JWT") :
+                                signedUserInfo).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JWT);
             } catch (RuntimeException re) {
                 throw error.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             }

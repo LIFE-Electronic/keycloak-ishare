@@ -508,7 +508,6 @@ public class ISHARE {
             
         cert.verify(iSHARE_CA.getPublicKey());
 
-        return "RS256".equals(jws.getHeader().getAlgorithm().name())
-                && RSAProvider.verify(jws, cert.getPublicKey());
+        return RSAProvider.verify(jws, cert.getPublicKey());
     }
 }

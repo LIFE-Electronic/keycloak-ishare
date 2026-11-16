@@ -816,13 +816,26 @@ public class TokenManager {
 
     public AccessToken transformUserInfoAccessToken(KeycloakSession session, AccessToken token,
                                                     UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
-        return ProtocolMapperUtils.getSortedProtocolMappers(session, clientSessionCtx, mapper -> mapper.getValue() instanceof UserInfoTokenMapper)
+        token = ProtocolMapperUtils.getSortedProtocolMappers(session, clientSessionCtx, mapper -> mapper.getValue() instanceof UserInfoTokenMapper)
                 .collect(new TokenCollector<AccessToken>(token) {
                     @Override
                     protected AccessToken applyMapper(AccessToken token, Map.Entry<ProtocolMapperModel, ProtocolMapper> mapper) {
                         return ((UserInfoTokenMapper) mapper.getValue()).transformUserInfoToken(token, mapper.getKey(), session, userSession, clientSessionCtx);
                     }
                 });
+        if (TokenUtil.hasScope(clientSessionCtx.getScopeString(), "iSHARE")
+                || TokenUtil.hasScope(clientSessionCtx.getScopeString(), "ishare")) {
+            Object organisationIdentifier = token.getOtherClaims().get("organisationIdentifier");
+            if (organisationIdentifier == null) {
+                organisationIdentifier = userSession.getUser().getFirstAttribute("companyId");
+            }
+            if (!(organisationIdentifier instanceof String)
+                    || !((String) organisationIdentifier).matches("[A-Z]{5}-\\S+")) {
+                throw new IllegalStateException("iSHARE requires an organisationIdentifier in ETSI format; configure the claim mapper or the user's companyId");
+            }
+            token.getOtherClaims().put("organisationIdentifier", organisationIdentifier);
+        }
+        return token;
     }
 
     public AccessToken transformIntrospectionAccessToken(KeycloakSession session, AccessToken token,
@@ -967,12 +980,25 @@ public class TokenManager {
 
     public IDToken transformIDToken(KeycloakSession session, IDToken token,
                                     UserSessionModel userSession, ClientSessionContext clientSessionCtx) {
-        return ProtocolMapperUtils.getSortedProtocolMappers(session, clientSessionCtx, mapper -> mapper.getValue() instanceof OIDCIDTokenMapper)
+        token = ProtocolMapperUtils.getSortedProtocolMappers(session, clientSessionCtx, mapper -> mapper.getValue() instanceof OIDCIDTokenMapper)
                 .collect(new TokenCollector<IDToken>(token) {
                     protected IDToken applyMapper(IDToken token, Map.Entry<ProtocolMapperModel, ProtocolMapper> mapper) {
                         return ((OIDCIDTokenMapper) mapper.getValue()).transformIDToken(token, mapper.getKey(), session, userSession, clientSessionCtx);
                     }
                 });
+        if (TokenUtil.hasScope(clientSessionCtx.getScopeString(), "iSHARE")
+                || TokenUtil.hasScope(clientSessionCtx.getScopeString(), "ishare")) {
+            Object organisationIdentifier = token.getOtherClaims().get("organisationIdentifier");
+            if (organisationIdentifier == null) {
+                organisationIdentifier = userSession.getUser().getFirstAttribute("companyId");
+            }
+            if (!(organisationIdentifier instanceof String)
+                    || !((String) organisationIdentifier).matches("[A-Z]{5}-\\S+")) {
+                throw new IllegalStateException("iSHARE requires an organisationIdentifier in ETSI format; configure the claim mapper or the user's companyId");
+            }
+            token.getOtherClaims().put("organisationIdentifier", organisationIdentifier);
+        }
+        return token;
     }
 
     protected AccessToken initToken(RealmModel realm, ClientModel client, UserModel user, UserSessionModel session,
