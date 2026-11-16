@@ -37,7 +37,7 @@
   },
   "wireit": {
     "build": {
-      "command": "rollup --config --configPlugin typescript && pnpm run duplicate-types",
+      "command": "rollup --config --configPlugin typescript && shx cp src/*.d.ts dist/ && pnpm run duplicate-types",
       "files": [
         "src/**",
         "package.json",
@@ -45,8 +45,7 @@
         "tsconfig.json"
       ],
       "output": [
-        "dist/**",
-        "!dist/*.d.ts"
+        "dist/**"
       ]
     }
   },
