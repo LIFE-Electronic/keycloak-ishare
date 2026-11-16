@@ -20,7 +20,6 @@
         <js.adapter.distDir>${js.adapter.projectDir}/dist</js.adapter.distDir>
         <!-- as the frontend-maven-plugin depends on workingDirectory, list all parts which should be ignored from the checksum -->
         <maven.build.cache.exclude.value.1>${maven.multiModuleProjectDirectory}/js/libs/keycloak-js/node_modules</maven.build.cache.exclude.value.1>
-        <!-- TODO: this is almost correct, as the DIST folder includes also two source files -->
         <maven.build.cache.exclude.value.2>${maven.multiModuleProjectDirectory}/js/libs/keycloak-js/dist</maven.build.cache.exclude.value.2>
     </properties>
 
@@ -41,9 +40,6 @@
                     <filesets>
                         <fileset>
                             <directory>${js.adapter.distDir}</directory>
-                            <excludes>
-                                <exclude>*.d.ts</exclude>
-                            </excludes>
                         </fileset>
                     </filesets>
                 </configuration>
