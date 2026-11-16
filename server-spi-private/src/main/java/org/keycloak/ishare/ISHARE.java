@@ -49,16 +49,6 @@ class ISHAREAuthenticatorConfig implements Serializable {
     @JsonProperty(value="ishare-ca-file", required=true)
     public String ishareCaFile;
 
-    @JsonProperty("allowed-dataspaces")
-    public ISHAREAllowedDataspaces allowedDataspaces;
-}
-
-class ISHAREAllowedDataspaces implements Serializable {
-    @JsonProperty("dataspace_ids")
-    public List<String> dataspaceIds = Collections.emptyList();
-
-    @JsonProperty("required_agreement_types")
-    public List<String> requiredAgreementTypes = Collections.emptyList();
 }
 
 class ISHAREJWSHeader extends JWSHeader
@@ -113,39 +103,7 @@ class ISHAREPartyInfo implements Serializable {
 class ISHAREPartyClaim implements Serializable {
     public String type;
     public String status;
-    public String endDate;
-    public String dataspaceId;
-    public String agreementType;
     public String x5c;
-}
-
-class ISHAREPartyValidation {
-    static boolean validate(ISHAREPartyInfo party, String clientId, String clientCert,
-            ISHAREAllowedDataspaces allowedDataspaces) {
-        if (party == null || !clientId.equals(party.party_id) || party.claims == null) {
-            return false;
-        }
-        boolean active = party.claims.stream().anyMatch(claim -> claim != null
-                && "frameworkCompliance".equals(claim.type) && "active".equals(claim.status));
-        boolean certificateMatches = party.claims.stream().anyMatch(claim -> claim != null
-                && "x509Certificate".equals(claim.type) && clientCert.equals(claim.x5c));
-        if (!active || !certificateMatches) {
-            return false;
-        }
-        if (allowedDataspaces == null) {
-            return true;
-        }
-        return allowedDataspaces.dataspaceIds.stream().anyMatch(dataspace -> {
-            boolean member = party.claims.stream().anyMatch(claim -> claim != null
-                    && "dataspaceMembership".equals(claim.type) && "active".equals(claim.status)
-                    && dataspace.equals(claim.dataspaceId));
-            boolean agreements = allowedDataspaces.requiredAgreementTypes.stream().allMatch(type ->
-                    party.claims.stream().anyMatch(claim -> claim != null
-                            && "dataspaceAgreement".equals(claim.type)
-                            && dataspace.equals(claim.dataspaceId) && type.equals(claim.agreementType)));
-            return member && agreements;
-        });
-    }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -161,7 +119,6 @@ public class ISHARE {
     String iSHARESatellitePartyId;
     String iSHARESatelliteBaseUrl;
     X509Certificate iSHARE_CA;
-    ISHAREAllowedDataspaces allowedDataspaces;
     KeycloakSession session;
 
     public ISHARE(KeycloakSession session) throws RuntimeException {
@@ -186,7 +143,6 @@ public class ISHARE {
 
             iSHARESatellitePartyId = cfg.satelliteId;
             iSHARESatelliteBaseUrl = cfg.satelliteUrl;
-            allowedDataspaces = cfg.allowedDataspaces;
 
             FileInputStream inStream = new FileInputStream(cfg.ishareCaFile);
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -461,7 +417,15 @@ public class ISHARE {
         
         ISHAREPartyToken partyInfoToken = JsonSerialization.readValue(contentBytes, ISHAREPartyToken.class);
 
-        return ISHAREPartyValidation.validate(partyInfoToken.party_info, clientId, clientCert, allowedDataspaces);
+        ISHAREPartyInfo party = partyInfoToken.party_info;
+        if (party == null || !clientId.equals(party.party_id) || party.claims == null) {
+            return false;
+        }
+        boolean active = party.claims.stream().anyMatch(claim -> claim != null
+                && "frameworkCompliance".equals(claim.type) && "active".equals(claim.status));
+        boolean certificateMatches = party.claims.stream().anyMatch(claim -> claim != null
+                && "x509Certificate".equals(claim.type) && clientCert.equals(claim.x5c));
+        return active && certificateMatches;
     }
 
     public boolean validateJwtToken(JsonWebToken token, String idpEORI) throws Exception
